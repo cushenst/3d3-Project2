@@ -3,7 +3,7 @@ import threading
 import time
 
 
-SERVER_HOST = "2001:818:e2c1:bf00:7929:aba0:9b56:7a62" # Change to server IP address
+SERVER_HOST = "2001:818:e2c1:bf00:9011:f16c:f306:ddf4" # Change to server IP address
 PORT = 1234
 ADDRESS = (SERVER_HOST, PORT)
 
