@@ -1,14 +1,16 @@
 import socket
 import threading
+from datetime import datetime
+import json
 
 
-HOST = "2001:818:e2c1:bf00:b5ba:858a:3dbc:9150" # Server IP address
+HOST = "2001:818:e2c1:bf00:9011:f16c:f306:ddf4" # Server IP address
 PORT = 1234
 ADDRESS = (HOST, PORT)
 
 MESSAGE_SIZE = 1024
 ENCODING = 'utf-8'
-DISCONNECT_MESSAGE = "!!!!!" # Not used yet
+PING_MESSAGE = "ping"
 
 CLIENTS = []
 client_count = 0
@@ -18,7 +20,8 @@ s_socket.bind(ADDRESS)
 
 
 def server_start():
-    print(f"Server {ADDRESS}")
+    current_time = datetime.now().strftime("%H:%M:%S")
+    print(f"[{current_time}] Server {ADDRESS} online.")
     s_socket.listen()
 
     thread_broadcast = threading.Thread(target=server_broadcast, args=())
@@ -31,29 +34,51 @@ def server_start():
 
 
 def client_connect(connection, address):
-    print(f"Client {address} connected to server.")
+    current_time = datetime.now().strftime("%H:%M:%S")
+    print(f"[{current_time}] Client {address} connected to server.")
     CLIENTS.append(connection)
     global client_count
     client_count += 1
     print(f"Active Connections: {client_count}")
     while True:
-        message = connection.recv(MESSAGE_SIZE).decode(ENCODING)
-        if (message):
-            if (message == DISCONNECT_MESSAGE):
-                print(f"Client {address} disconnected from server.")
-                connection.close()
-                CLIENT.remove(connection)
-                client_count -= 1
-                break
-            print(f"{address}: {message}")
-            connection.send("Yes!".encode(ENCODING))
+        try:
+            message = connection.recv(MESSAGE_SIZE).decode(ENCODING)
+            if (message):
+                # if (message == DISCONNECT_MESSAGE):
+                #     print(f"Client {address} disconnected from server.")
+                #     connection.close()
+                #     CLIENT.remove(connection)
+                #     client_count -= 1
+                #     break
+                current_time = datetime.now().strftime("%H:%M:%S")
+                print(f"[{current_time}] Client {address}: {message}")
+                if (message == PING_MESSAGE):
+                    json_response = {"message": "pong", "priority": 1}
+                    json_response = json.dumps(json_response)
+                    connection.send(json_response.encode(ENCODING))
+                    current_time = datetime.now().strftime("%H:%M:%S")
+                    print(f"[{current_time}] Server: {json_response}]")
+        except ConnectionResetError:
+            print(f"Client {address} disconnected from server.")
+            connection.close()
+            CLIENTS.remove(connection)
+            client_count -= 1
+            break
+
 
 
 def server_broadcast():
     while True:
-        dummy_message = input()
+        message = input()
+        priority = int(input())
+        json_message = {"message": message, "priority": priority}
+        json_message = json.dumps(json_message)
+
         for connection in CLIENTS:
-            connection.send(dummy_message.encode(ENCODING))
+            connection.send(json_message.encode(ENCODING))
+
+        current_time = datetime.now().strftime("%H:%M:%S")
+        print(f"[{current_time}] Server: {json_message}")
 
 
 if __name__ == '__main__':

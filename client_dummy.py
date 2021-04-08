@@ -3,7 +3,7 @@ import threading
 import time
 
 
-SERVER_HOST = "192.168.1.69" # Change to server IP address
+SERVER_HOST = "2001:818:e2c1:bf00:9011:f16c:f306:ddf4" # Change to server IP address
 PORT = 1234
 ADDRESS = (SERVER_HOST, PORT)
 
@@ -11,13 +11,13 @@ MESSAGE_SIZE = 1024
 ENCODING = 'utf-8'
 DISCONNECT_MESSAGE = "!!!!!" # Not used yet
 
-c_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+c_socket = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
 c_socket.connect(ADDRESS)
 
 
 def ping():
     while True:
-        c_socket.send("Connected?".encode(ENCODING))
+        c_socket.send("ping".encode(ENCODING))
         response = c_socket.recv(MESSAGE_SIZE).decode(ENCODING)
         print(response)
         time.sleep(10)
