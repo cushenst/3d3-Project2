@@ -1,10 +1,10 @@
 import socket
 import threading
-from datetime import datetime
+import time
 import json
 
 
-HOST = "2001:818:e2c1:bf00:9011:f16c:f306:ddf4" # Server IP address
+HOST = "2001:818:e2c1:bf00:c0a7:75b1:afa2:cc76" # Server IP address
 PORT = 1234
 ADDRESS = (HOST, PORT)
 
@@ -20,7 +20,7 @@ s_socket.bind(ADDRESS)
 
 
 def server_start():
-    current_time = datetime.now().strftime("%H:%M:%S")
+    current_time = time.strftime("%x %X")
     print(f"[{current_time}] Server {ADDRESS} online.")
     s_socket.listen()
 
@@ -34,7 +34,7 @@ def server_start():
 
 
 def client_connect(connection, address):
-    current_time = datetime.now().strftime("%H:%M:%S")
+    current_time = time.strftime("%x %X")
     print(f"[{current_time}] Client {address} connected to server.")
     CLIENTS.append(connection)
     global client_count
@@ -50,16 +50,17 @@ def client_connect(connection, address):
                 #     CLIENT.remove(connection)
                 #     client_count -= 1
                 #     break
-                current_time = datetime.now().strftime("%H:%M:%S")
+                current_time = time.strftime("%x %X")
                 print(f"[{current_time}] Client {address}: {message}")
                 if (message == PING_MESSAGE):
                     json_response = {"message": "pong", "priority": 1}
                     json_response = json.dumps(json_response)
                     connection.send(json_response.encode(ENCODING))
-                    current_time = datetime.now().strftime("%H:%M:%S")
-                    print(f"[{current_time}] Server: {json_response}]")
+                    current_time = time.strftime("%x %X")
+                    print(f"[{current_time}] Server: {json_response}")
         except ConnectionResetError:
-            print(f"Client {address} disconnected from server.")
+            current_time = time.strftime("%x %X")
+            print(f"[{current_time}] Client {address} disconnected from server.")
             connection.close()
             CLIENTS.remove(connection)
             client_count -= 1
@@ -77,7 +78,7 @@ def server_broadcast():
         for connection in CLIENTS:
             connection.send(json_message.encode(ENCODING))
 
-        current_time = datetime.now().strftime("%H:%M:%S")
+        current_time = time.strftime("%x %X")
         print(f"[{current_time}] Server: {json_message}")
 
 
