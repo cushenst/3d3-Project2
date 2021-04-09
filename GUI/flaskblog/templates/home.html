@@ -4,11 +4,19 @@
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
-              <a class="mr-2" href="#">{{ post.author }}</a>
-              <small class="text-muted">{{ post.date_posted }}</small>
-            </div>
-            <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
-            <p class="article-content">{{ post.content }}</p>
+              <p style="text-align:center; font-size: 30px;">
+              Input the message here:
+            </p>
+     <form method="POST" action="/send">
+     	<div class="form-group">
+        <p style="text-align:center;">
+     		<input type="text" name="message">
+        </p>
+     	</div>
+       <p style="text-align:center;">
+     	<input class="btn btn-primary" type="submit" value="submit">
+    </p>
+     </form>
           </div>
         </article>
     {% endfor %}
