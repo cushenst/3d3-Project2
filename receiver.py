@@ -2,6 +2,9 @@ import json
 import socket
 import threading
 import time
+import sys
+import subprocess
+
 
 import transmit
 
@@ -29,6 +32,10 @@ def connect():
             print(f"Connecting Failed waiting {retry_time} seconds")
             time.sleep(retry_time)
             retry_time *= 2
+        if retry_time >= 32:
+            subprocess.Popen(["python3", "audio-receiver.py"])
+            sys.exit()
+
     return 1
 
 

@@ -16,6 +16,7 @@ CLIENTS = []
 client_count = 0
 
 s_socket = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+s_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s_socket.bind(ADDRESS)
 
 

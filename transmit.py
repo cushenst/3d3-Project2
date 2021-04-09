@@ -12,7 +12,7 @@ def send_over_sound(message):
     sd.default.device = 3  # int(input("Please select Microphone:\t"))
     # Samples per second
     sps = 44100
-    spp = int(2560 * 2.5)
+    spp = int(2560 * 2)
 
     # Base Frequency that must match receiver
     freq_hz = 1200.0
@@ -33,7 +33,7 @@ def send_over_sound(message):
     # print message in binary
     print([message_binary[i:i + 7] for i in range(0, len(message_binary), 7)])
 
-    message_binary_list = [3.33, 3.33]
+    message_binary_list = [3.33, 3.66]
 
     # encode message no symbols beside each other will be the same.
     for i in range(0, len(message_binary), 3):
@@ -57,6 +57,9 @@ def send_over_sound(message):
         if message_binary_list[transmit_lenght - 2] == message_binary_list[transmit_lenght - 1]:
             message_binary_list[transmit_lenght - 1] = 3.33
 
+    message_binary_list.append(3.66)
+    message_binary_list.append(3.33)
+    message_binary_list.append(3.66)
     print(message_binary_list)
 
     # NumpPy to calculate the waveform
@@ -100,3 +103,4 @@ def send_over_sound(message):
     sd.stop()
     return
 
+send_over_sound("Hello World")

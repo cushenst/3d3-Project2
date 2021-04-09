@@ -3,7 +3,6 @@
 import shutil
 import sys
 
-import matplotlib.pyplot as plt
 import numpy as np
 import sounddevice as sd
 from aubio import float_type, pitch
@@ -16,8 +15,8 @@ except AttributeError:
 # select sample rate. 20 works well in quiet environments
 block_duration = 20
 # select microphone
-print(sd.query_devices())
-device = int(input("Please select Microphone:\t"))
+#print(sd.query_devices())
+device = 2#int(input("Please select Microphone:\t"))
 # set gain
 gain = 1.0
 # set frequence range expected
@@ -38,7 +37,7 @@ hop_s = 1024  # hop size
 
 tolerance = 0.7
 # set the ± frequency between symbols
-f_tolerance = 20
+f_tolerance = 25
 
 # set base frequency. Must match transmitter.
 base_frequency = 1200
@@ -52,6 +51,8 @@ pitch_o.set_tolerance(tolerance)
 pitches = []
 confidences = []
 total_frames = 1
+listening_start = False
+listening_stop = False
 
 
 # convert symbols received to binary
@@ -68,7 +69,8 @@ def mod2bin(number):
         2.5: "11",
         2.66: "110",
         3: "111",
-        3.33: ""
+        3.33: "",
+        3.66: ""
     }
     binary = cases.get(number)
     return binary
@@ -78,6 +80,8 @@ def callback(indata, frames, time, status):
     global pitches
     global confidences
     global total_frames
+    global listening_start
+    global listening_stop
     data_found = False
     if status:
         print(status)
@@ -94,9 +98,17 @@ def callback(indata, frames, time, status):
             # get pitch
             pitch = pitch_o(frame)[0]
             confidence = pitch_o.get_confidence()
-            values = [0.66, 1, 1.33, 1.66, 2, 2.33, 2.66, 3, 3.33]
+            values = [0.66, 1, 1.33, 1.66, 2, 2.33, 2.66, 3, 3.33, 3.66]
             for a in values:
                 if (f_tolerance + base_frequency * a) > pitch > (base_frequency * a - f_tolerance):
+                    if a == 3.66:
+                        if not listening_start:
+                            listening_start = True
+                            print("Here1")
+                        if listening_stop == False and listening_start == True and 2 in pitches:
+                            listening_stop = True
+                            print("Here2")
+                    #if listening_start and not listening_stop:
                     pitches += [a]
                     data_found = True
                     break
@@ -113,9 +125,11 @@ with sd.InputStream(device=device, channels=1, callback=callback,
                     samplerate=samplerate):
     print(samplerate)
     while True:
-        response = input()
-        if response in ('', 'q', 'Q'):
+        if listening_stop:
             break
+        if listening_start:
+            if listening_stop:
+                break
 
 pitches = np.array(pitches[1:])
 
@@ -128,7 +142,7 @@ for i in range(1, len(pitches)):
     if pitches[i] != pitches[i - 1]:
         stringOfEncodedValues += str(float(pitches[i]))
         stringOfEncodedValues += " "
-        if pitches[i] == 3.33:
+        if pitches[i] == 3.33 or pitches[i] == 3.66:
             if len(stringOfValues) != 0:
                 print(stringOfValues)
                 stringOfValues += stringOfValues[len(stringOfValues) - 3]
