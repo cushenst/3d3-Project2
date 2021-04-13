@@ -2,9 +2,9 @@ import socket
 import threading
 import time
 import json
+from routes import json_var
 
-
-HOST = "2001:818:e2c1:bf00:c0a7:75b1:afa2:cc76" # Server IP address
+HOST = "127.0.0.1" # Server IP address
 PORT = 1234
 ADDRESS = (HOST, PORT)
 
@@ -15,7 +15,7 @@ PING_MESSAGE = "ping"
 CLIENTS = []
 client_count = 0
 
-s_socket = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+s_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s_socket.bind(ADDRESS)
 
@@ -71,8 +71,8 @@ def client_connect(connection, address):
 
 def server_broadcast():
     while True:
-        message = input()
-        priority = int(input())
+        message = json_var["message"]
+        priority = json_var["priority"]
         json_message = {"message": message, "priority": priority}
         json_message = json.dumps(json_message)
 

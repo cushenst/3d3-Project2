@@ -4,17 +4,20 @@
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
-              <p style="text-align:center; font-size: 30px;">
-              Input the message here:
-            </p>
      <form method="POST" action="/send">
-     	<div class="form-group">
+      <div class="form-group">
         <p style="text-align:center;">
+          Input message here:
      		<input type="text" name="message">
         </p>
-     	</div>
+        <p style="text-align:center;">
+          Input priority level:
+     		<input type="number" name="priority">
+        </p>
+        </div>
+        <br><br>
        <p style="text-align:center;">
-     	<input class="btn btn-primary" type="submit" value="submit">
+     	<input class="btn btn-pr" type="submit" value="submit">
     </p>
      </form>
           </div>

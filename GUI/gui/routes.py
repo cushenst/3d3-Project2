@@ -1,8 +1,10 @@
 from flask import render_template, url_for, flash, redirect
-from flaskblog import app
-from flaskblog.forms import RegistrationForm, LoginForm
-from flaskblog.models import User, Post
-from flask import Flask, request
+from gui import app
+from gui.forms import RegistrationForm, LoginForm
+from gui.models import User, Post
+from flask import Flask, request, render_template, jsonify
+import json
+
 posts = [
     {
         'author': 'Corey Schafer',
@@ -12,7 +14,6 @@ posts = [
     }
 ]
 
-@app.route("/")
 @app.route("/home")
 def home():
     return render_template('home.html', posts=posts)
@@ -32,20 +33,25 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-@app.route("/login", methods=['GET', 'POST'])
+@app.route("/", methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
+        if form.email.data == 'admin@admin.com' and form.password.data == 'password':
             flash('You have been logged in!', 'success')
             return redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
-@app.route('/send',methods=['GET','POST'])
+@app.route('/send',methods=['GET', 'POST'])
 def send():
-	if request.method == 'POST':
-		message = request.form['message']
-		return render_template('textbox.html',message=message)
-	return render_template('index.html')	
+    if request.method == 'POST':
+        message = request.form['message']
+        priority = request.form['priority']
+        json_var = jsonify(request.form)
+        return jsonify(request.form)
+
+        return render_template('send.html', message=message, priority=priority)
+    return render_template('home.html')
+
