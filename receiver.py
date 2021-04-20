@@ -6,10 +6,10 @@ import sys
 import subprocess
 
 
-import transmit
+# import transmit
 
 PORT = 1234
-SERVER = "localhost"
+SERVER = "2a04:b480:20:15:3d3::1"
 sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
 
 
@@ -87,7 +87,8 @@ def receive_data():
                     print(message_formatted)
 
                 if priorty == 5:
-                    transmit.send_over_sound(message)
+                    # transmit.send_over_sound(message)
+                    print("Sound playing...")
         except OSError:
             pass
         except Exception as e:
