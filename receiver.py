@@ -6,7 +6,7 @@ import sys
 import subprocess
 
 
-# import transmit
+import transmit
 
 PORT = 1234
 SERVER = "2a04:b480:20:15:3d3::1"
@@ -87,8 +87,8 @@ def receive_data():
                     print(message_formatted)
 
                 if priorty == 5:
-                    # transmit.send_over_sound(message)
-                    print("Sound playing...")
+                    transmit.send_over_sound(message)
+                    print("Audio playing...")
         except OSError:
             pass
         except Exception as e:
