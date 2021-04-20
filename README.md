@@ -30,4 +30,4 @@ import sounddevice
 sounddevice.query_devices()
 ```
 
-Within the server terminal, "help" can be inputted to obtain the available commands.
+Once the server is running within the server terminal, "help" can be inputted to obtain the available commands.
